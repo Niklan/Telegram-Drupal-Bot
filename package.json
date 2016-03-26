@@ -2,7 +2,7 @@
   "name": "drupalerbot",
   "version": "1.0.0",
   "description": "Drupal Telegram node.js bot",
-  "main": "app.js",
+  "main": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -14,6 +14,6 @@
   "author": "Niklan",
   "license": "ISC",
   "dependencies": {
-    "gulp": "^3.9.1"
+    "node-telegram-bot-api": "^0.21.1"
   }
 }
