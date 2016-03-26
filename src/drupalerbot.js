@@ -118,6 +118,42 @@ DrupalerBot.prototype.projectParseDownloads = function (page) {
       releases.recommended[$release].date = $('td:nth-child(3)', elem).html();
     });
 
+  // Other releases.
+  $('.view-display-id-recommended .view-display-id-other > .view-content tbody tr')
+    .each(function (i, elem) {
+      var $release = i;
+      releases.other[$release] = {};
+
+      var version = /<a.*>(.+)<\/a>/.exec($('td:nth-child(1)', elem).html());
+      releases.other[$release].version = version[1];
+      releases.other[$release].files = {};
+      $('td:nth-child(2) a', elem).each(function (i, elem) {
+        releases.other[$release].files[i] = {
+          link: $(elem).attr('href'),
+          filesize: $('.filesize', elem).html()
+        }
+      });
+      releases.other[$release].date = $('td:nth-child(3)', elem).html();
+    });
+
+  // Development releases.
+  $('.view-display-id-recommended .view-display-id-development > .view-content tbody tr')
+    .each(function (i, elem) {
+      var $release = i;
+      releases.dev[$release] = {};
+
+      var version = /<a.*>(.+)<\/a>/.exec($('td:nth-child(1)', elem).html());
+      releases.dev[$release].version = version[1];
+      releases.dev[$release].files = {};
+      $('td:nth-child(2) a', elem).each(function (i, elem) {
+        releases.dev[$release].files[i] = {
+          link: $(elem).attr('href'),
+          filesize: $('.filesize', elem).html()
+        }
+      });
+      releases.dev[$release].date = $('td:nth-child(3)', elem).html();
+    });
+
   return releases;
 };
 
