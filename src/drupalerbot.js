@@ -18,7 +18,8 @@ var cheerio = require('cheerio');
  * Brain of Bot.
  * @constructor
  */
-var DrupalerBot = function () {};
+var DrupalerBot = function () {
+};
 
 /**
  * Get Drupal project information and send it.
@@ -34,8 +35,15 @@ DrupalerBot.prototype.getProjectInfo = function (project, callback) {
       var installations = /Reported installs: <strong>(.+)<\/strong>/g.exec(projectInfo);
       var downloads = /Downloads: (.+)<\/li>/g.exec(projectInfo);
 
+      var message = '*' + title + '*\n\r'
+        + description + '\n\r\n\r'
+        + '💡 *Информация о проекте*\n\r'
+        + 'Кол-во установок: ' + installations[1] + '\n\r'
+        + 'Кол-во скачиваний: ' + downloads[1] + '\n\r\n\r'
+        + '💾 *Загрузки*\n\r\n\r';
+
       var recommendedReleases = [];
-      $('.view-project-release-download-table.view-display-id-recommended table tbody tr')
+      $('.view-id-project_release_download_table.view-display-id-recommended table tbody tr')
         .each(function (i, elem) {
           var $v = i;
           recommendedReleases[$v] = {};
@@ -64,14 +72,6 @@ DrupalerBot.prototype.getProjectInfo = function (project, callback) {
             }
           });
         });
-
-
-      var message = '*' + title + '*\n\r'
-        + description + '\n\r\n\r'
-        + '💡  *Информация о проекте*\n\r'
-        + 'Кол-во установок: ' + installations[1] + '\n\r'
-        + 'Кол-во скачиваний: ' + downloads[1] + '\n\r\n\r'
-        + '💾  *Загрузки*\n\r\n\r';
 
       if (recommendedReleases) {
         message += '*Стабильные релизы*\n\r';
