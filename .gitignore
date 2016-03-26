@@ -1,0 +1,5 @@
+node_modules
+# PHP Storm and overs JetBrains IDE's.
+.idea
+# This is KDE hidden files for directory.
+.directory

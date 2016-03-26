@@ -12,5 +12,8 @@
     "Bot"
   ],
   "author": "Niklan",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "gulp": "^3.9.1"
+  }
 }
