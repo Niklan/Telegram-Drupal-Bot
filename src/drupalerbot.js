@@ -71,13 +71,13 @@ DrupalerBot.prototype.getProjectInfo = function (project, callback) {
       var releases = $this.projectParseDownloads(body);
 
       /*if (recommendedReleases) {
-        message += '*Стабильные релизы*\n\r';
-        recommendedReleases.forEach(function (item, i) {
-          message += item[0].version + ' - '
-            + '[tar.gz](' + item[1].releases[0].link + ') _' + item[1].releases[0].filesize + '_, '
-            + '[zip](' + item[1].releases[1].link + ') _' + item[1].releases[1].filesize + '_\n\r';
-        });
-      }*/
+       message += '*Стабильные релизы*\n\r';
+       recommendedReleases.forEach(function (item, i) {
+       message += item[0].version + ' - '
+       + '[tar.gz](' + item[1].releases[0].link + ') _' + item[1].releases[0].filesize + '_, '
+       + '[zip](' + item[1].releases[1].link + ') _' + item[1].releases[1].filesize + '_\n\r';
+       });
+       }*/
 
       callback(message);
     }
@@ -100,49 +100,25 @@ DrupalerBot.prototype.projectParseDownloads = function (page) {
     };
 
 
-  $('.view-display-id-recommended > .view-content tr').each(function (i, elem) {
-    var $release = i;
-    releases.recommended[$release] = {};
+  // Recommended releases.
+  $('.view-display-id-recommended > .view-content tbody tr')
+    .each(function (i, elem) {
+      var $release = i;
+      releases.recommended[$release] = {};
 
-    var version = /<a.*>(.+)<\/a>/.exec($('td:nth-child(1)', elem).html());
-    console.log(version[1]);
-    /*releases.recommended[$release].version = version[1];
-    releases.recommended[$release].files = {};
-    $('td:nth-child(2) a', elem).each(function (i, elem) {
-      releases.recommended[$release].files[i] = {
-        link: $(elem).attr('href'),
-        filesize: $('.filesize', elem).html()
-      }
-    });*/
+      var version = /<a.*>(.+)<\/a>/.exec($('td:nth-child(1)', elem).html());
+      releases.recommended[$release].version = version[1];
+      releases.recommended[$release].files = {};
+      $('td:nth-child(2) a', elem).each(function (i, elem) {
+        releases.recommended[$release].files[i] = {
+          link: $(elem).attr('href'),
+          filesize: $('.filesize', elem).html()
+        }
+      });
+      releases.recommended[$release].date = $('td:nth-child(3)', elem).html();
+    });
 
-    /*var $v = i;
-     recommendedReleases[$v] = {};
-     console.log($(elem).html());
-     $('td', elem).each(function (i, elem) {
-     var $i = i;
-     recommendedReleases[$v][$i] = {};
-     switch ($i) {
-     case 0: // Version
-     var version = /<a.*>(.+)<\/a>/g.exec($(elem).html())
-     recommendedReleases[$v][$i].version = version[1];
-     break;
-
-     case 1: // Download files
-     recommendedReleases[$v][$i].releases = {};
-     $('a', elem).each(function (i, elem) {
-     recommendedReleases[$v][$i].releases[i] = {
-     link: $(elem).attr('href'),
-     filesize: $('.filesize', elem).html()
-     }
-     });
-     break;
-
-     case 2: // Date
-     recommendedReleases[$v][$i].date = $(elem).html();
-     break;
-     }
-     });*/
-  });
+  return releases;
 };
 
 module.exports = new DrupalerBot();
