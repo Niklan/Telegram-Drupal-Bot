@@ -3,7 +3,7 @@
  * Main code base.
  */
 var TelegramBot = require('node-telegram-bot-api');
-var Telegram = new TelegramBot('180059939:AAFeUdKgIjQrBmvk2uzQMrKDL0glmIaArEE', {polling: true});
+var Telegram = new TelegramBot('', {polling: true});
 var DrupalerBot = require('./src/drupalerbot.js');
 
 /**
@@ -11,10 +11,12 @@ var DrupalerBot = require('./src/drupalerbot.js');
  *
  * @command
  *  /project [project_name]
+ *  /p [project_name]
  */
-Telegram.onText(/\/project (.+)/, function (msg, match) {
-  DrupalerBot.getProjectInfo(match[1], function (message) {
-    Telegram.sendMessage(msg.chat.id, message, {
+Telegram.onText(/\/(project|p) (.+)/, function (msg, match) {
+  DrupalerBot.getProjectInfo(match[2], function (message) {
+    console.log(msg);
+    Telegram.sendMessage(msg.from.id, message, {
       parse_mode: 'Markdown',
       disable_web_page_preview: true
     });

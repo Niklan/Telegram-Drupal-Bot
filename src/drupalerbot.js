@@ -55,11 +55,10 @@ DrupalerBot.prototype.getProjectInfo = function (project, callback) {
         installations = /Reported installs: <strong>(.+)<\/strong>/g.exec(projectInfo),
         downloads = /Downloads: (.+)<\/li>/g.exec(projectInfo),
         message = $this.formatString(
-          '*{{title}}*\n\r{{description}}\n\r' +
+          '*{{title}}*\n\r{{description}}\n\r\n\r' +
           '💡 *Информация о проекте*\n\r' +
           'Кол-во установок: {{installations}}\n\r' +
-          'Кол-во скачиваний: {{downloads}}\n\r\n\r' +
-          '💾 *Загрузки*\n\r\n\r',
+          'Кол-во скачиваний: {{downloads}}\n\r\n\r',
           {
             title: title,
             description: description,
@@ -70,14 +69,57 @@ DrupalerBot.prototype.getProjectInfo = function (project, callback) {
 
       var releases = $this.projectParseDownloads(body);
 
-      /*if (recommendedReleases) {
-       message += '*Стабильные релизы*\n\r';
-       recommendedReleases.forEach(function (item, i) {
-       message += item[0].version + ' - '
-       + '[tar.gz](' + item[1].releases[0].link + ') _' + item[1].releases[0].filesize + '_, '
-       + '[zip](' + item[1].releases[1].link + ') _' + item[1].releases[1].filesize + '_\n\r';
-       });
-       }*/
+      if (releases.recommended || releases.other || releases.dev) {
+        message += '💾 *Загрузки*\n\r\n\r';
+
+        if (releases.recommended) {
+          message += '*Стабильные релизы*\n\r';
+          Object.keys(releases.recommended).forEach(function(key) {
+            message += $this.formatString(
+              '*{{version}}*: [zip]({{zip_url}}) {{zip_filesize}}, [tar.gz]({{tar_url}}) {{tar_filesize}}\n\r',
+              {
+                version: releases.recommended[key].version,
+                zip_url: releases.recommended[key].files[1].link,
+                zip_filesize: releases.recommended[key].files[1].filesize,
+                tar_url: releases.recommended[key].files[0].link,
+                tar_filesize: releases.recommended[key].files[0].filesize
+              }
+            );
+          });
+        }
+
+        if (releases.other) {
+          message += '\n\r*Прочие релизы*\n\r';
+          Object.keys(releases.other).forEach(function(key) {
+            message += $this.formatString(
+              '*{{version}}*: [zip]({{zip_url}}) {{zip_filesize}}, [tar.gz]({{tar_url}}) {{tar_filesize}}\n\r',
+              {
+                version: releases.other[key].version,
+                zip_url: releases.other[key].files[1].link,
+                zip_filesize: releases.other[key].files[1].filesize,
+                tar_url: releases.other[key].files[0].link,
+                tar_filesize: releases.other[key].files[0].filesize
+              }
+            );
+          });
+        }
+
+        if (releases.dev) {
+          message += '\n\r*Development релизы*\n\r';
+          Object.keys(releases.dev).forEach(function(key) {
+            message += $this.formatString(
+              '*{{version}}*: [zip]({{zip_url}}) {{zip_filesize}}, [tar.gz]({{tar_url}}) {{tar_filesize}}\n\r',
+              {
+                version: releases.dev[key].version,
+                zip_url: releases.dev[key].files[1].link,
+                zip_filesize: releases.dev[key].files[1].filesize,
+                tar_url: releases.dev[key].files[0].link,
+                tar_filesize: releases.dev[key].files[0].filesize
+              }
+            );
+          });
+        }
+      }
 
       callback(message);
     }
